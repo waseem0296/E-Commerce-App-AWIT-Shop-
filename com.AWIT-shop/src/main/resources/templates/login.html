@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+	<meta charset="ISO-8859-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login</title>
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom CSS -->
+	<style>
+        body {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            font-family: 'Poppins', sans-serif;
+            color: #495057;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            background: #2575fc;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: #2575fc;
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #1a62c7;
+            transform: scale(1.05);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            background: #144ea0;
+        }
+
+        input {
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            border-color: #2575fc;
+            box-shadow: 0 0 5px rgba(37, 117, 252, 0.6);
+        }
+
+        .alert {
+            font-size: 0.9rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        a {
+            color: #2575fc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #1a62c7;
+        }
+
+        img {
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        img:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+<section>
+	<div class="container mt-5 p-5">
+		<div class="row">
+			<div class="col-md-6 p-5 d-flex justify-content-center align-items-center">
+				<img alt="Login Illustration" src="img/ecom.png" width="100%" height="auto">
+			</div>
+			<div class="col-md-6 mt-3 p-5">
+				<div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+					<div class="card-header text-center">
+						<p class="fs-4">Login</p>
+						<!-- Error Message -->
+						<div th:if="${param.error}" class="alert alert-danger text-center">
+							<th:block th:if="${session.SPRING_SECURITY_LAST_EXCEPTION != null}">
+								[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]
+							</th:block>
+						</div>
+						<!-- Logout Message -->
+						<div th:if="${param.logout}" class="alert alert-success">
+							Logged out successfully.
+						</div>
+					</div>
+					<div class="card-body">
+						<form action="/login" method="post" class="needs-validation" novalidate>
+							<!-- Email Field -->
+							<div class="mb-3">
+								<label for="email" class="form-label">Email</label>
+								<input type="email" id="email" name="username" class="form-control"
+									   th:value="${param.username}" required
+									   th:attr="placeholder=${session.SPRING_SECURITY_LAST_USERNAME != null ? 'Email' : ''}">
+								<div class="invalid-feedback">
+									Please enter a valid email address.
+								</div>
+							</div>
+
+							<!-- Password Field -->
+							<div class="mb-3">
+								<label for="password" class="form-label">Password</label>
+								<input type="password" id="password" name="password" class="form-control" required>
+								<div class="invalid-feedback">
+									Please enter your password.
+								</div>
+							</div>
+
+							<!-- Submit Button -->
+							<button type="submit" class="btn btn-primary col-md-12">Login</button>
+						</form>
+					</div>
+
+					<div class="card-footer text-center">
+						<a href="forgot_password.html">Forgot Password?</a><br>
+						Don't have an account? <a href="register.html">Create one</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Client-side Validation Script -->
+<script>
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+</body>
+</html>

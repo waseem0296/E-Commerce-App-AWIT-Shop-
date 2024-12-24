@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Enhanced E-commerce</title>
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+	<!-- Custom CSS -->
+	<style>
+    /* Page Styling */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #f5f7fa, #cfd9df);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+    }
+
+    header .navbar-brand {
+      font-weight: bold;
+      color: #6610f2;
+    }
+
+    /* Slider */
+    .carousel img {
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      filter: brightness(0) invert(1);
+    }
+
+    /* Category Section */
+    .category-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #343a40;
+      text-align: center;
+      margin: 30px 0;
+      position: relative;
+      animation: slideInFromLeft 1s;
+    }
+
+    .category-title::after {
+      content: "";
+      width: 100px;
+      height: 5px;
+      background: #6610f2;
+      display: block;
+      margin: 10px auto 0;
+      animation: expandLine 1s;
+    }
+
+    .card {
+      transition: all 0.3s ease-in-out;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .card img {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .card img:hover {
+      transform: scale(1.2);
+    }
+
+    /* Product Section */
+    .products-section {
+      background: linear-gradient(to right, #ffffff, #dfe9f3);
+      padding: 50px 10px;
+    }
+
+    .products-title {
+      font-size: 2rem;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #6c757d;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInFromLeft {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes expandLine {
+      from {
+        width: 0;
+      }
+      to {
+        width: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Navigation -->
+<header>
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<div class="container">
+			<a class="navbar-brand" href="#">ShopNow</a>
+		</div>
+	</nav>
+</header>
+
+<!-- Hero Slider -->
+<section id="slider">
+	<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+				<img src="img/ecom1.png" class="d-block w-100" alt="..." height="450">
+			</div>
+			<div class="carousel-item">
+				<img src="img/ecom2.jpg" class="d-block w-100" alt="..." height="450">
+			</div>
+			<div class="carousel-item">
+				<img src="img/ecom3.jpg" class="d-block w-100" alt="..." height="450">
+			</div>
+		</div>
+		<button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+		</button>
+	</div>
+</section>
+
+<!-- Categories -->
+<section class="container">
+	<h2 class="category-title">Categories</h2>
+	<div class="row" data-aos="fade-up" data-aos-duration="1000">
+		<div class="col-md-3" th:each="c:${category}">
+			<div class="card rounded shadow p-3 text-center">
+				<img th:src="@{'img/category_img/'+${c.imageName}}" class="img-fluid" alt="" height="120">
+				<a th:href="@{'/products?category='+${c.name}}" class="text-decoration-none">[[${c.name}]]</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Products -->
+<section class="products-section">
+	<h3 class="products-title">Latest Products</h3>
+	<div class="container">
+		<div class="row" data-aos="fade-up" data-aos-duration="1000">
+			<div class="col-md-3" th:each="p:${products}">
+				<div class="card shadow-sm p-3">
+					<img th:src="@{'img/product_img/'+${p.image}}" class="img-fluid" alt="">
+					<p class="text-center"><a th:href="@{'/product/'+${p.id}}" class="text-decoration-none">[[${p.title}]]</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+    AOS.init();
+  </script>
+</body>
+</html>
