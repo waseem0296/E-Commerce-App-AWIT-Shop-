@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Admin Dashboard</title>
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+	<style>
+        /* Custom Styling */
+        body {
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 120px; /* Increased padding for footer spacing */
+            transition: all 0.3s ease-in-out;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            animation: fadeIn 1.5s forwards;
+            margin-bottom: 40px; /* Adding margin-bottom for spacing from footer */
+        }
+
+        .card-sh {
+            border-radius: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            background: #ffffff;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            transition: all 0.5s ease;
+        }
+
+        .card-sh:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            background-color: #f7f7f7;
+        }
+
+        .card-body i {
+            font-size: 48px;
+            transition: transform 0.3s, color 0.3s, font-size 0.3s;
+            color: #666;
+        }
+
+        .card-body h4 {
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+            transition: color 0.3s;
+        }
+
+        .card-body:hover i {
+            transform: scale(1.1);
+            color: #007bff;
+        }
+
+        .card-body:hover h4 {
+            color: #007bff;
+        }
+
+        /* Text Colors */
+        .text-primary {
+            color: #007bff;
+        }
+
+        .text-warning {
+            color: #f39c12;
+        }
+
+        .text-success {
+            color: #28a745;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: #4e73df;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            margin-bottom: 20px; /* Added bottom margin for spacing */
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: white !important;
+        }
+
+        .navbar-brand:hover,
+        .nav-link:hover {
+            color: #ffdd57 !important;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .navbar-toggler-icon {
+            filter: brightness(0) invert(1);
+        }
+
+        .nav-item.active {
+            border-bottom: 3px solid #ffdd57;
+        }
+
+        .nav-link {
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 40px 0 20px 0; /* Increased top padding for spacing */
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-icons {
+            margin-top: 20px; /* Increased margin for spacing */
+        }
+
+        .footer-icons a {
+            color: #fff;
+            font-size: 25px;
+            margin: 0 15px;
+            transition: transform 0.3s, color 0.3s ease;
+        }
+
+        .footer-icons a:hover {
+            transform: scale(1.2);
+        }
+
+        .footer-icons a.fa-facebook {
+            color: #3b5998; /* Facebook color */
+        }
+
+        .footer-icons a.fa-twitter {
+            color: #1da1f2; /* Twitter color */
+        }
+
+        .footer-icons a.fa-instagram {
+            color: #e4405f; /* Instagram color */
+        }
+
+        /* Fade-in effect for page elements */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Header -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="#"><i class="fa-solid fa-cogs"></i> Admin Dashboard</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item active"><a class="nav-link" href="/admin"><i class="fa-solid fa-house"></i> Home</a></li>
+				<li class="nav-item"><a class="nav-link" href="/admin/loadAddProduct"><i class="fa-solid fa-square-plus"></i> Add Product</a></li>
+				<li class="nav-item"><a class="nav-link" href="/admin/category"><i class="fa-solid fa-list"></i> Add Category</a></li>
+				<li class="nav-item"><a class="nav-link" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<!-- Content Section -->
+<section>
+	<div class="container">
+		<p class="text-center fs-3 font-weight-bold mt-4">Admin Dashboard</p>
+
+		<div class="row d-flex justify-content-center">
+			<!-- Cards -->
+			<div class="col-md-4 mt-3 mb-4">
+				<a href="/admin/loadAddProduct" class="text-decoration-none">
+					<div class="card card-sh">
+						<div class="card-body text-center text-primary">
+							<i class="fa-solid fa-square-plus fa-3x"></i>
+							<h4>Add Product</h4>
+						</div>
+					</div>
+				</a>
+			</div>
+
+			<div class="col-md-4 mt-3 mb-4">
+				<a href="/admin/category" class="text-decoration-none">
+					<div class="card card-sh">
+						<div class="card-body text-center text-warning">
+							<i class="fa-solid fa-list fa-3x"></i>
+							<h4>Add Category</h4>
+						</div>
+					</div>
+				</a>
+			</div>
+
+			<div class="col-md-4 mt-3 mb-4">
+				<a href="/admin/products" class="text-decoration-none">
+					<div class="card card-sh">
+						<div class="card-body text-center text-success">
+							<i class="fa-solid fa-table-list fa-3x"></i>
+							<h4>View Products</h4>
+						</div>
+					</div>
+				</a>
+			</div>
+
+			<div class="col-md-4 mt-3 mb-4">
+				<a href="/admin/orders" class="text-decoration-none">
+					<div class="card card-sh">
+						<div class="card-body text-center text-warning">
+							<i class="fa-solid fa-box-open fa-3x"></i>
+							<h4>Manage Orders</h4>
+						</div>
+					</div>
+				</a>
+			</div>
+
+			<div class="col-md-4 mt-3 mb-4">
+				<a href="/admin/users?type=1" class="text-decoration-none">
+					<div class="card card-sh">
+						<div class="card-body text-center text-primary">
+							<i class="fa-solid fa-circle-user fa-3x"></i>
+							<h4>View Users</h4>
+						</div>
+					</div>
+				</a>
+			</div>
+
+			<div class="col-md-4 mt-3 mb-4">
+				<a href="/admin/add-admin" class="text-decoration-none">
+					<div class="card card-sh">
+						<div class="card-body text-center text-primary">
+							<i class="fa-solid fa-user-plus fa-3x"></i>
+							<h4>Add Admin</h4>
+						</div>
+					</div>
+				</a>
+			</div>
+
+		</div>
+	</div>
+</section>
+
+<!-- Footer -->
+<div class="footer">
+	<p>© 2024 AWIT Shop. All Rights Reserved.</p>
+	<div class="footer-icons">
+		<a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+		<a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+		<a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+	</div>
+</div>
+
+<!-- Bootstrap JS and Font Awesome JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

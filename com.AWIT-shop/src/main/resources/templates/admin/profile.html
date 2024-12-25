@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+	<meta charset="ISO-8859-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>User Profile</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			background-color: #f2f3f7;
+			font-family: 'Arial', sans-serif;
+			transition: all 0.4s ease-in-out;
+		}
+
+		.card {
+			border-radius: 12px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+			margin-bottom: 30px;
+		}
+
+		.card:hover {
+			transform: translateY(-10px);
+			box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.1);
+		}
+
+		.profile-image {
+			width: 130px;
+			height: 130px;
+			border-radius: 50%;
+			border: 4px solid #007bff;
+			transition: transform 0.3s ease;
+		}
+
+		.profile-image:hover {
+			transform: scale(1.1);
+		}
+
+		.profile-info {
+			font-size: 1.15em;
+			padding: 15px;
+		}
+
+		.btn-primary-custom {
+			background-color: #007bff;
+			border: none;
+			font-weight: bold;
+			font-size: 0.9em;
+			padding: 8px 20px;
+			border-radius: 8px;
+			transition: all 0.3s ease;
+		}
+
+		.btn-primary-custom:hover {
+			background-color: #0056b3;
+			transform: scale(1.05);
+		}
+
+		.form-control {
+			border-radius: 8px;
+			box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+			font-size: 0.95em;
+		}
+
+		.form-control:focus {
+			box-shadow: inset 0 0 10px rgba(0, 123, 255, 0.6);
+			border-color: #007bff;
+		}
+
+		.container {
+			opacity: 0;
+			animation: fadeIn 1.5s forwards;
+		}
+
+		@keyframes fadeIn {
+			0% { opacity: 0; }
+			100% { opacity: 1; }
+		}
+
+		/* Adjusting layout for smaller screens */
+		@media (max-width: 768px) {
+			.profile-image {
+				width: 100px;
+				height: 100px;
+			}
+			.card {
+				margin: 0 auto;
+			}
+		}
+
+		/* Custom margin for success and error messages */
+		.message {
+			margin-top: 10px;
+			text-align: center;
+		}
+
+		/* Styling for form table */
+		.table-borderless td, .table-borderless th {
+			border: none;
+			padding: 12px 10px;
+		}
+	</style>
+</head>
+<body>
+
+<section>
+	<div class="container mt-5">
+		<div class="row">
+			<div class="col-md-8 offset-md-2">
+				<div class="card p-3">
+					<h3 class="text-center mb-4">My Profile</h3>
+
+					<!-- Success/Error Message -->
+					<th:block th:if="${session.succMsg}">
+						<p class="text-success fw-bold message">[[${session.succMsg}]]</p>
+						<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+					</th:block>
+					<th:block th:if="${session.errorMsg}">
+						<p class="text-danger fw-bold message">[[${session.errorMsg}]]</p>
+						<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+					</th:block>
+
+					<!-- Profile Image -->
+					<div class="text-center mb-3">
+						<img alt="Profile Image" th:src="@{'../img/profile_img/'+${user.profileImage}}"
+							 class="profile-image border p-2">
+					</div>
+
+					<!-- Profile Update Form -->
+					<form action="/admin/update-profile" method="post" enctype="multipart/form-data">
+						<table class="table table-borderless">
+							<tbody>
+							<tr>
+								<th scope="row">Name</th>
+								<td>:</td>
+								<td><input type="text" name="name" class="form-control" th:value="${user.name}" required></td>
+							</tr>
+							<tr>
+								<th scope="row">Mobile Number</th>
+								<td>:</td>
+								<td><input type="text" name="mobileNumber" class="form-control" th:value="${user.mobileNumber}" pattern="\d{10}" required title="Mobile number must be 10 digits"></td>
+							</tr>
+							<tr>
+								<th scope="row">Email</th>
+								<td>:</td>
+								<td><input type="email" name="email" class="form-control" readonly th:value="${user.email}" required></td>
+							</tr>
+							<tr>
+								<th scope="row">Address</th>
+								<td>:</td>
+								<td><input type="text" name="address" class="form-control" th:value="${user.address}" required></td>
+							</tr>
+							<tr>
+								<th scope="row">City</th>
+								<td>:</td>
+								<td><input type="text" name="city" class="form-control" th:value="${user.city}" required></td>
+							</tr>
+							<tr>
+								<th scope="row">State</th>
+								<td>:</td>
+								<td><input type="text" name="state" class="form-control" th:value="${user.state}" required></td>
+							</tr>
+							<tr>
+								<th scope="row">Pincode</th>
+								<td>:</td>
+								<td><input type="text" name="pincode" class="form-control" th:value="${user.pincode}" pattern="\d{6}" required title="Pincode should be 6 digits"></td>
+							</tr>
+							<tr>
+								<th scope="row">Profile Image</th>
+								<td>:</td>
+								<td><input type="file" name="img" class="form-control"></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td class="text-center">
+									<button class="btn btn-sm btn-primary-custom">Update</button>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+
+				<div class="card p-3">
+					<h4 class="text-center mb-4">Change Password</h4>
+					<form action="/admin/change-password" method="post" onsubmit="return validatePasswordForm()">
+						<table class="table table-borderless">
+							<tbody>
+							<tr>
+								<th scope="row">Current Password</th>
+								<td><input type="password" name="currentPassword" class="form-control" required></td>
+							</tr>
+							<tr>
+								<th scope="row">New Password</th>
+								<td><input type="password" name="newPassword" class="form-control" id="newPassword" required
+										   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+										   title="Password must be at least 8 characters long, with at least one uppercase letter, one lowercase letter, one number, and one special character"></td>
+							</tr>
+							<tr>
+								<th scope="row">Confirm Password</th>
+								<td><input type="password" name="confirmPassword" class="form-control" id="confirmPassword" required></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td class="text-center">
+									<button class="btn btn-sm btn-primary-custom col-md-4">Update</button>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+	// JavaScript function to validate password and confirm password match
+	function validatePasswordForm() {
+		var newPassword = document.getElementById('newPassword').value;
+		var confirmPassword = document.getElementById('confirmPassword').value;
+
+		// Check if new password matches confirm password
+		if (newPassword !== confirmPassword) {
+			alert('Passwords do not match!');
+			return false;
+		}
+		return true;
+	}
+</script>
+
+</body>
+</html>
