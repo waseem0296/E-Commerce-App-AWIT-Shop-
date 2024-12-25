@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+	<meta charset="ISO-8859-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Products</title>
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<!-- Custom CSS -->
+	<style>
+        /* General styling */
+        body {
+            background: #f7f7f7;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Header search bar */
+        .bg-primary {
+            background: linear-gradient(135deg, #0066cc, #4f87cb);
+            color: #fff;
+        }
+
+        .input-group input {
+            border-radius: 50px 0 0 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+
+        .input-group .btn {
+            border-radius: 0 50px 50px 0;
+            background-color: #005bb5;
+            transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+        }
+
+        .input-group .btn:hover {
+            background: #1a62c7;
+            transform: scale(1.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Autocomplete suggestions */
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            max-height: 200px;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateY(-10px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .autocomplete-suggestion {
+            padding: 12px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .autocomplete-suggestion:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Product cards */
+        .product-card {
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            overflow: hidden;
+            background: white;
+            height: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card img {
+            object-fit: cover;
+            height: 200px;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .card-text {
+            font-size: 16px;
+        }
+
+        /* Pagination styles */
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .page-item.active .page-link {
+            background-color: #005bb5;
+            border-color: #005bb5;
+        }
+
+        .page-item:hover .page-link {
+            background-color: #1a62c7;
+            border-color: #1a62c7;
+        }
+
+        .page-link {
+            transition: background 0.3s, border-color 0.3s;
+        }
+    </style>
+</head>
+<body>
+<section>
+	<div class="container-fluid bg-primary p-4 fadeIn">
+		<div class="row">
+			<div class="col-md-8 offset-md-2">
+				<form action="/products" method="get">
+					<div class="input-group position-relative">
+						<input type="text" class="form-control" name="ch" id="searchInput" placeholder="Search products..." autocomplete="off">
+						<button class="btn btn-light text-dark ms-3 col-md-2">
+							<i class="fa-solid fa-magnifying-glass"></i> Search
+						</button>
+						<div id="suggestionsContainer" class="autocomplete-suggestions"></div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid mt-3 fadeIn">
+		<div class="row">
+			<div class="col-md-3 p-0">
+				<div class="card shadow-sm bg-body-tertiary rounded">
+					<div class="card-body">
+						<div class="list-group">
+							<p class="fs-5">Category</p>
+							<a href="/products" th:classappend="${paramValue==''} ? 'active':''" class="list-group-item list-group-item-action"> All </a>
+							<a th:each="c:${categories}" th:href="@{'/products?category='+${c.name}}" th:classappend="${paramValue == c.name} ? 'active':''" class="list-group-item list-group-item-action">[[${c.name}]]</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="card fadeIn">
+					<div class="card-body">
+						<p class="fs-3 text-center">Products</p>
+						<div class="row">
+							<th:block th:if="${productsSize > 0}">
+								<div class="col-md-4 mb-4" th:each="p:${products}">
+									<div class="product-card p-3">
+										<img alt="" th:src="@{'/img/product_img/'+${p.image}}" class="img-fluid">
+										<p class="card-title mt-2 text-center">[[${p.title}]]</p>
+										<p class="card-text text-center">
+											<span>&#8377; [[${p.discountPrice}]]</span><br>
+											<span class="text-decoration-line-through text-secondary">&#8377; [[${p.price}]]</span>
+											<span class="fs-6 text-success">[[${p.discount}]]% off</span>
+										</p>
+										<div class="d-grid gap-2">
+											<a th:href="@{'/product/'+${p.id}}" class="btn btn-primary">View Details</a>
+										</div>
+									</div>
+								</div>
+							</th:block>
+							<th:block th:unless="${productsSize > 0}">
+								<p class="fs-4 text-center mt-4 text-danger">Product not available</p>
+							</th:block>
+						</div>
+					</div>
+				</div>
+
+				<div class="row mt-3">
+					<div class="col-md-4">Total Products: [[${totalElements}]]</div>
+					<div class="col-md-8">
+						<th:block th:if="${productsSize > 0}">
+							<nav aria-label="Page navigation example">
+								<ul class="pagination">
+									<li class="page-item" th:classappend="${isFirst} ? 'disabled':''">
+										<a class="page-link" th:href="@{'/products?pageNo='+${pageNo-1}}" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+
+									<li th:each="i:${#numbers.sequence(1, totalPages)}" class="page-item" th:classappend="${pageNo+1==i}?'active':''">
+										<a class="page-link" th:href="@{'/products?pageNo='+${i-1}}">[[${i}]]</a>
+									</li>
+
+									<li class="page-item" th:classappend="${isLast} ? 'disabled':''">
+										<a class="page-link" th:href="@{'/products?pageNo='+${pageNo+1}}" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</th:block>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+        const searchInput = document.getElementById("searchInput");
+        const suggestionsContainer = document.getElementById("suggestionsContainer");
+
+        searchInput.addEventListener("input", function() {
+            const query = searchInput.value.trim();
+            if (query.length > 0) {
+                fetch(`/products/search-suggestions?q=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestionsContainer.innerHTML = '';
+                        data.forEach(product => {
+                            const suggestionItem = document.createElement("div");
+                            suggestionItem.classList.add("autocomplete-suggestion");
+                            suggestionItem.textContent = product.title;
+                            suggestionItem.addEventListener("click", function() {
+                                searchInput.value = product.title;
+                                suggestionsContainer.innerHTML = ''; // Clear suggestions
+                                document.forms[0].submit(); // Submit form after selecting
+                            });
+                            suggestionsContainer.appendChild(suggestionItem);
+                        });
+                    })
+                    .catch(error => {
+                        console.error("Error fetching suggestions:", error);
+                    });
+            } else {
+                suggestionsContainer.innerHTML = ''; // Clear suggestions if input is empty
+            }
+        });
+    </script>
+</body>
+</html>
+</html>
